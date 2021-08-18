@@ -3,19 +3,24 @@ html(lang="en")
     head
         meta(charset="UTF-8")
         meta(http-equiv="X-UA-Compatible", content="IE=edge")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        meta(title="CustomZoom")
-        title zoom
+        meta(title="Home")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")       
+        title CustomZoom
         link(rel="stylesheet",href="http://unpkg.com/mvp.css") 
-    body
-        header  
-            h1 CustomZoom
-        main    
-            form#nick
-                input(type="text",placeholder="choose a nickname", required) 
-                button Save
-            ul
-            form#message
-                input(type="text",placeholder="write a message", required) 
-                button Send
+    body 
+        header 
+            h1 CustomZoom 
+        main 
+            div#welcome
+                form
+                    input(type="text",placeholder="room name",required) 
+                    button Enter Room 
+            div#room
+                h3
+                ul 
+                form
+                    input(type="text",placeholder="message",required) 
+                    button Send
+       
+        script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
