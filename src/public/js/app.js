@@ -7,6 +7,29 @@ const room = document.getElementById("room");
 room.hidden = true;
 let roomName;
 
+function addMessage(msg){
+    const ul = room.querySelector("ul");
+    const li = document.createElement("li");
+    li.innerText = msg;
+    ul.appendChild(li);
+}
+function handleMessageSubmit(e)
+{
+    e.preventDefault();
+    const input = room.querySelector("#msg input");
+    socket.emit("new_message",input.value,roomName,()=>{
+        addMessage(`You: ${input.value}`);
+        input.value="";
+    });
+}
+function handleNicknameSubmit(e)
+{
+    e.preventDefault();
+    const input = room.querySelector("#name input");
+    socket.emit("nickname",input.value);
+}
+
+
 form.addEventListener("submit",(e)=>{
     e.preventDefault();
     const input = form.querySelector("input");
@@ -15,7 +38,22 @@ form.addEventListener("submit",(e)=>{
         room.hidden = false;
         const h3 = room.querySelector("h3");
         h3.innerText = `Room ${roomName}`;
+        const nameForm = room.querySelector("#name");
+        const msgForm = room.querySelector("#msg");
+        msgForm.addEventListener("submit",handleMessageSubmit);
+        nameForm.addEventListener("submit",handleNicknameSubmit);
     });   
     roomName = input.value;
     input.value="";
+});
+
+socket.on("welcome",(user)=>{
+    addMessage(`${user} joined!`);
+});
+socket.on("bye",(user)=>{
+    addMessage(`${user} left ㅠㅠ!`);
+});
+socket.on("new_message",(msg)=>{addMessage(msg)});
+socket.on("room_change",(publicRooms)=>{
+    console.log(publicRooms);
 });

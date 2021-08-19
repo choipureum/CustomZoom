@@ -16,15 +16,50 @@ const handleListen = () => console.log("Listening on http://localhost:3000")
 /*웹소켓 서버 + http 서버 둘다 사용 가능하게 합친다.(굳이 http프로토콜 서버가 필요없으면 안해도댐)*/ 
 const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
+
+function publicRooms()
+{   
+    const {
+        sockets:{
+            adapter:{
+                sids,rooms},
+            },
+        } = wsServer;
+    //const sids = wsServer.sockets.adapter.sids;
+    //const rooms = wsServer.sockets.adapter.rooms;
+    const publicRooms =[];
+    rooms.forEach((_,key)=>{
+        if(sids.get(key)=== undefined){
+            publicRooms.push(key);
+        }
+    });
+    return publicRooms;
+}
+
+
+
 /**socket.io방식*/
 wsServer.on("connection",(socket)=>{
+    socket["nickname"]= "Anonymous"; 
     socket.onAny((e)=>{
         console.log(`Socket room: ${e}`);
     });
+    //방 들어옴
     socket.on("enter_room",(roomName,done)=>{
         socket.join(roomName);
         done();
-    });  
+        socket.to(roomName).emit("welcome",socket.nickname);
+        wsServer.sockets.emit("room_change",publicRooms());
+    }); 
+    //방 나감
+    socket.on("disconnecting",()=>{
+        socket.rooms.forEach((room) => socket.to(room).emit("bye",socket.nickname));
+    });
+    socket.on("new_message",(msg,room,done)=>{
+        socket.to(room).emit("new_message",`${socket.nickname} : ${msg}`);
+        done();
+    }); 
+    socket.on("nickname",(nickname)=>socket["nickname"]=nickname);
 });
 
 
