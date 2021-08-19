@@ -11,6 +11,9 @@ npm i express
 npm i pug
 npm i nodemon
 npm i ws
+#admin-ui Dashboard
+npm i @socket.io/admin-ui
+#run!
 npm run dev
 ```
 
