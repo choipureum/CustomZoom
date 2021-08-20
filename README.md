@@ -13,8 +13,12 @@ npm i nodemon
 npm i ws
 #admin-ui Dashboard
 npm i @socket.io/admin-ui
+
 #run!
 npm run dev
+#임시배포
+npm i -g localtunnel
+lt --port 3000
 ```
 
 ## License
